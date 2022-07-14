@@ -1,7 +1,7 @@
 
 const VkBot = require('node-vk-bot-api')
 const {photoNSFWCheck} = require("./nsfw");
-const { banUser } = require("./utils");
+const { banUser, deleteMessage } = require("./utils");
 
 
 let banWord = /nigger|пидор|pidor|черные|чёрные|ч([её])рный|негр|гей|геи|дмитрий|рофл|глад валакас|55205/g
@@ -9,6 +9,11 @@ let banWord = /nigger|пидор|pidor|черные|чёрные|ч([её])рн�
 const bot = new VkBot("");
 
 const defaultReactionNSFW = async(ctx, predict) => await banUser(ctx, bot,`Я ВИЖУ ЗДЕСЬ КАКУЮ-ТО ЕБЛЮ, СЪЕБИ В БАРАК ЧУЧЕЛО ${predict}`)
+
+const banDeleteReactionNSFW = async(ctx, predict) => {
+    await defaultReactionNSFW(ctx,predict)
+    await deleteMessage(ctx,bot)
+}
 
 bot.use(async (ctx, next) => {
     if (banWord.test(ctx.message.text)){
@@ -18,13 +23,14 @@ bot.use(async (ctx, next) => {
         for (let i = 0; i < ctx.message.attachments.length; i++) {
             if (ctx.message.attachments[i].type === "photo"){
                 const url = ctx.message.attachments[i].photo.sizes[ctx.message.attachments[i].photo.sizes.length-1].url
-                photoNSFWCheck(url, (predict)=>defaultReactionNSFW(ctx, predict))
+                photoNSFWCheck(url, (predict)=>banDeleteReactionNSFW(ctx, predict))
             } else if (ctx.message.attachments[i].type === "video"){
                 const url = ctx.message.attachments[i].video.image[ctx.message.attachments[i].video.image.length-1].url
-                photoNSFWCheck(url, (predict)=>defaultReactionNSFW(ctx, predict))
+                photoNSFWCheck(url, (predict)=>banDeleteReactionNSFW(ctx, predict))
             }
         }
     }
+    console.log(ctx.message)
     try {
         await next();
     } catch (e) {
