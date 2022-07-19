@@ -23,7 +23,8 @@ const deleteMessage = async (ctx, bot) => {
     try {
         await bot.execute('messages.delete',{
             peer_id: ctx.message.peer_id,
-            cmids: ctx.message.conversation_message_id
+            cmids: ctx.message.conversation_message_id,
+            delete_for_all: true
         })
     } catch (e){
         console.error(e)
