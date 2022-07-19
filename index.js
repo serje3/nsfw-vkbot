@@ -6,7 +6,7 @@ const { banUser, deleteMessage } = require("./utils");
 
 let banWord = /nigger|пидор|pidor|пидр|женщина|ч([её])рные|ч([её])рный|негр|гей|геи|дмитрий|рофл|глад валакас|55205/g
 
-const bot = new VkBot(proccess.env.TOKEN);
+const bot = new VkBot(process.env.TOKEN);
 
 const defaultReactionNSFW = async(ctx, predict) => await banUser(ctx, bot,`Я ВИЖУ ЗДЕСЬ КАКУЮ-ТО ЕБЛЮ, СЪЕБИ В БАРАК ЧУЧЕЛО ${predict}`)
 
